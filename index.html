@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MergeMaster</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>MergeMaster</h1>
+      <p class="tagline">Bulk messages from preset profiles with variables</p>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button type="button" class="tab is-active" data-tab="profiles" role="tab" aria-selected="true">Profiles</button>
+      <button type="button" class="tab" data-tab="compose" role="tab" aria-selected="false">Compose</button>
+      <button type="button" class="tab" data-tab="list-compose" role="tab" aria-selected="false">List compose</button>
+    </nav>
+
+    <main>
+      <!-- Profiles -->
+      <section id="panel-profiles" class="panel is-active" role="tabpanel">
+        <div class="toolbar">
+          <button type="button" id="btn-new-profile" class="btn btn-primary">New profile</button>
+          <label class="btn btn-secondary file-label">
+            Import JSON
+            <input type="file" id="input-import-profile" accept=".json,application/json" hidden />
+          </label>
+        </div>
+        <div class="profiles-layout">
+          <ul id="profile-list" class="profile-list" aria-label="Saved profiles"></ul>
+          <div id="profile-editor" class="profile-editor card hidden">
+            <h2 id="editor-title">Edit profile</h2>
+            <label class="field">
+              <span>Name</span>
+              <input type="text" id="edit-name" autocomplete="off" />
+            </label>
+            <div class="delim-row">
+              <label class="field">
+                <span>Open bracket</span>
+                <input type="text" id="edit-bracket-open" autocomplete="off" maxlength="32" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Close bracket</span>
+                <input type="text" id="edit-bracket-close" autocomplete="off" maxlength="32" spellcheck="false" />
+              </label>
+            </div>
+            <p class="hint small delim-hint">Example: <code id="edit-bracket-example"></code> — in JSON use <code>variableBracketOpen</code> / <code>variableBracketClose</code>; if omitted, defaults are <code>{{</code> and <code>}}</code>.</p>
+            <label class="field">
+              <span>Template — use your brackets around each variable name</span>
+              <textarea id="edit-template" rows="12" placeholder="Hello {{name}}, your code is {{code}}."></textarea>
+            </label>
+            <p class="hint" id="detected-vars">Variables in template: —</p>
+            <div class="btn-row">
+              <button type="button" id="btn-save-profile" class="btn btn-primary">Save</button>
+              <button type="button" id="btn-export-profile" class="btn btn-secondary">Export JSON</button>
+              <button type="button" id="btn-delete-profile" class="btn btn-danger">Delete</button>
+              <button type="button" id="btn-cancel-edit" class="btn btn-ghost">Cancel</button>
+            </div>
+          </div>
+          <div id="profile-empty" class="empty-state card">
+            <p>Select a profile to edit, or create a new one. Each profile can use custom open/close brackets around variable names (defaults <code>{{</code> … <code>}}</code>).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compose -->
+      <section id="panel-compose" class="panel" role="tabpanel" hidden>
+        <div class="compose-top card">
+          <label class="field">
+            <span>Profile</span>
+            <select id="compose-profile-select"></select>
+          </label>
+          <p class="hint" id="compose-hint">Choose a profile, then fill variables or load a CSV.</p>
+        </div>
+
+        <div class="compose-grid">
+          <div class="card">
+            <h3>Variables</h3>
+            <p class="hint small" id="compose-csv-hint">Fill each field, or use CSV below. Column headers should match variable names (not the bracket text).</p>
+            <div id="compose-fields" class="compose-fields"></div>
+            <label class="field file-block">
+              <span>CSV (headers = variable names)</span>
+              <input type="file" id="input-csv" accept=".csv,text/csv" />
+            </label>
+            <button type="button" id="btn-clear-csv" class="btn btn-ghost btn-small">Clear CSV file</button>
+          </div>
+
+          <div class="card output-card">
+            <div class="output-header">
+              <h3>Result</h3>
+              <button type="button" id="btn-copy" class="btn btn-primary" disabled>Copy to clipboard</button>
+            </div>
+            <textarea id="compose-output" readonly rows="16" placeholder="Merged text appears here…"></textarea>
+            <p class="hint small" id="multi-row-note"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- List compose: profile | CSV toolbar, rows, add row -->
+      <section id="panel-list-compose" class="panel" role="tabpanel" hidden>
+        <div class="card list-compose-toolbar">
+          <div class="list-compose-toolbar-grid">
+            <div class="list-compose-col">
+              <h3 class="list-compose-col-title">Profile</h3>
+              <label class="field">
+                <span>Profile</span>
+                <select id="list-compose-profile-select"></select>
+              </label>
+              <p class="hint small list-compose-hint" id="list-compose-hint"></p>
+            </div>
+            <div class="list-compose-col list-compose-col-divider">
+              <h3 class="list-compose-col-title">CSV</h3>
+              <label class="field file-block">
+                <span>CSV file</span>
+                <input type="file" id="list-input-csv" accept=".csv,text/csv" />
+              </label>
+              <button type="button" id="list-btn-clear" class="btn btn-ghost btn-small">Clear list &amp; file</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-compose-rows-section">
+          <div class="list-compose-section-label">Rows</div>
+          <div id="list-compose-empty" class="empty-state card list-compose-empty">
+            <p>No rows yet. Import a CSV (header + data rows) or use <strong>Add row</strong> to enter values by hand.</p>
+          </div>
+          <div id="list-compose-rows" class="list-compose-rows"></div>
+        </div>
+
+        <div class="list-compose-footer">
+          <button type="button" id="btn-list-add-row" class="btn btn-secondary">Add row</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="core.js"></script>
+</body>
+</html>
