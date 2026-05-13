@@ -40,22 +40,39 @@
               <span>Name</span>
               <input type="text" id="edit-name" autocomplete="off" />
             </label>
+            <h3 class="section-title-hint" id="hint-profile-regular" tabindex="0">Regular brackets</h3>
             <div class="delim-row">
               <label class="field">
-                <span>Open bracket</span>
+                <span>Regular open bracket</span>
                 <input type="text" id="edit-bracket-open" autocomplete="off" maxlength="32" spellcheck="false" />
               </label>
               <label class="field">
-                <span>Close bracket</span>
+                <span>Regular close bracket</span>
                 <input type="text" id="edit-bracket-close" autocomplete="off" maxlength="32" spellcheck="false" />
               </label>
             </div>
-            <p class="hint small delim-hint">Example: <code id="edit-bracket-example"></code> — in JSON use <code>variableBracketOpen</code> / <code>variableBracketClose</code>; if omitted, defaults are <code>{{</code> and <code>}}</code>.</p>
+            <h3 class="section-title-hint" id="hint-profile-global" tabindex="0">Global brackets</h3>
+            <div class="delim-row">
+              <label class="field">
+                <span>Global open bracket</span>
+                <input type="text" id="edit-global-bracket-open" autocomplete="off" maxlength="32" spellcheck="false" />
+              </label>
+              <label class="field">
+                <span>Global close bracket</span>
+                <input type="text" id="edit-global-bracket-close" autocomplete="off" maxlength="32" spellcheck="false" />
+              </label>
+            </div>
             <label class="field">
-              <span>Template — use your brackets around each variable name</span>
-              <textarea id="edit-template" rows="12" placeholder="Hello {{name}}, your code is {{code}}."></textarea>
+              <span
+                id="hint-profile-template-label"
+                class="field-label-hint"
+                tabindex="0"
+                title="Regular and global placeholders can both appear. Wrap each variable name with your regular or global bracket pair."
+                >Template</span>
+              <textarea id="edit-template" rows="12" placeholder="[[campaign]] Hello {{name}}, your code is {{code}}."></textarea>
             </label>
-            <p class="hint" id="detected-vars">Variables in template: —</p>
+            <h3 class="section-title-hint" id="hint-profile-detected" tabindex="0">Detected</h3>
+            <p class="hint hint-detected-compact" id="detected-inline" aria-live="polite"></p>
             <div class="btn-row">
               <button type="button" id="btn-save-profile" class="btn btn-primary">Save</button>
               <button type="button" id="btn-export-profile" class="btn btn-secondary">Export JSON</button>
@@ -64,7 +81,7 @@
             </div>
           </div>
           <div id="profile-empty" class="empty-state card">
-            <p>Select a profile to edit, or create a new one. Each profile can use custom open/close brackets around variable names (defaults <code>{{</code> … <code>}}</code>).</p>
+            <p>Select a profile to edit, or create a new one. Regular placeholders use one bracket pair (defaults <code>{{</code> … <code>}}</code>); optional globals use another (defaults <code>[[</code> … <code>]]</code>), filled once per list in List compose.</p>
           </div>
         </div>
       </section>
@@ -73,19 +90,33 @@
       <section id="panel-compose" class="panel" role="tabpanel" hidden>
         <div class="compose-top card">
           <label class="field">
-            <span>Profile</span>
+            <span
+              id="compose-profile-hint-label"
+              class="field-label-hint"
+              tabindex="0"
+              title="Choose a profile, then fill variables or load a CSV."
+              >Profile</span>
             <select id="compose-profile-select"></select>
           </label>
-          <p class="hint" id="compose-hint">Choose a profile, then fill variables or load a CSV.</p>
         </div>
 
         <div class="compose-grid">
           <div class="card">
-            <h3>Variables</h3>
-            <p class="hint small" id="compose-csv-hint">Fill each field, or use CSV below. Column headers should match variable names (not the bracket text).</p>
+            <h3
+              id="compose-variables-heading"
+              class="section-title-hint"
+              tabindex="0"
+              title="Fill fields or load a CSV. Hover again after choosing a profile for bracket-specific tips."
+            >
+              Variables
+            </h3>
             <div id="compose-fields" class="compose-fields"></div>
             <label class="field file-block">
-              <span>CSV (headers = variable names)</span>
+              <span
+                class="field-label-hint"
+                tabindex="0"
+                title="One header row naming regular variables; each data row fills one merged block. Clear file to edit fields again."
+                >CSV (headers = variable names)</span>
               <input type="file" id="input-csv" accept=".csv,text/csv" />
             </label>
             <button type="button" id="btn-clear-csv" class="btn btn-ghost btn-small">Clear CSV file</button>
@@ -93,7 +124,7 @@
 
           <div class="card output-card">
             <div class="output-header">
-              <h3>Result</h3>
+              <h3 id="compose-result-heading" class="section-title-hint" tabindex="0" title="Merged text from the selected profile. Multi-row CSV may add a note below.">Result</h3>
               <button type="button" id="btn-copy" class="btn btn-primary" disabled>Copy to clipboard</button>
             </div>
             <textarea id="compose-output" readonly rows="16" placeholder="Merged text appears here…"></textarea>
@@ -107,15 +138,32 @@
         <div class="card list-compose-toolbar">
           <div class="list-compose-toolbar-grid">
             <div class="list-compose-col">
-              <h3 class="list-compose-col-title">Profile</h3>
+              <h3 class="list-compose-col-title section-title-hint" id="list-compose-profile-heading" tabindex="0">Profile</h3>
               <label class="field">
                 <span>Profile</span>
                 <select id="list-compose-profile-select"></select>
               </label>
-              <p class="hint small list-compose-hint" id="list-compose-hint"></p>
             </div>
             <div class="list-compose-col list-compose-col-divider">
-              <h3 class="list-compose-col-title">CSV</h3>
+              <h3
+                class="list-compose-col-title section-title-hint"
+                id="list-compose-globals-heading"
+                tabindex="0"
+                title="Filled once for the whole list. CSV columns only map to regular variable names (not global bracket text)."
+              >
+                Globals
+              </h3>
+              <div id="list-compose-global-fields" class="list-compose-global-fields"></div>
+            </div>
+            <div class="list-compose-col list-compose-col-divider">
+              <h3
+                class="list-compose-col-title section-title-hint"
+                id="list-compose-csv-heading"
+                tabindex="0"
+                title="Import a CSV with a header row (regular variable names) and one data row per list item. Cleared when you clear the list."
+              >
+                CSV
+              </h3>
               <label class="field file-block">
                 <span>CSV file</span>
                 <input type="file" id="list-input-csv" accept=".csv,text/csv" />
@@ -126,7 +174,9 @@
         </div>
 
         <div class="list-compose-rows-section">
-          <div class="list-compose-section-label">Rows</div>
+          <div class="list-compose-section-label section-title-hint" id="list-compose-rows-heading" tabindex="0" title="Each CSV data row or manual row becomes one preview with Copy. Globals apply to every row.">
+            Rows
+          </div>
           <div id="list-compose-empty" class="empty-state card list-compose-empty">
             <p>No rows yet. Import a CSV (header + data rows) or use <strong>Add row</strong> to enter values by hand.</p>
           </div>
@@ -139,6 +189,17 @@
       </section>
     </main>
   </div>
-  <script src="core.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/template.js"></script>
+  <script src="js/csv.js"></script>
+  <script src="js/profilesStore.js"></script>
+  <script src="js/clipboard.js"></script>
+  <script src="js/dom.js"></script>
+  <script src="js/profileHelpers.js"></script>
+  <script src="js/listComposeUi.js"></script>
+  <script src="js/composeUi.js"></script>
+  <script src="js/profilesUi.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

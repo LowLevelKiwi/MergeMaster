@@ -279,6 +279,77 @@ body {
   margin-right: 0.15em;
 }
 
+.section-title-hint,
+.field-label-hint {
+  cursor: help;
+}
+
+.field span.field-label-hint {
+  border-bottom: 1px dotted var(--border);
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.section-title-hint {
+  border-bottom: 1px dotted transparent;
+}
+
+.section-title-hint:hover,
+.field-label-hint:hover {
+  border-bottom-color: var(--muted);
+  color: var(--text);
+}
+
+.profile-editor h3.section-title-hint {
+  margin: 0.85rem 0 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.profile-editor h3.section-title-hint:first-of-type {
+  margin-top: 0.25rem;
+}
+
+.hint-detected-compact {
+  margin: 0 0 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.compose-grid .card > h3.section-title-hint {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.compose-fields > .section-title-hint {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.compose-fields > .section-title-hint:first-child {
+  margin-top: 0;
+}
+
+.list-compose-col-title.section-title-hint {
+  cursor: help;
+}
+
+.list-compose-section-label.section-title-hint {
+  cursor: help;
+}
+
 .hint {
   margin: 0 0 1rem;
   font-size: 0.85rem;
@@ -364,9 +435,13 @@ h2 {
 
 .list-compose-toolbar-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1.25rem 1.5rem;
   align-items: start;
+}
+
+.list-compose-global-fields .field:last-child {
+  margin-bottom: 0;
 }
 
 @media (max-width: 640px) {
