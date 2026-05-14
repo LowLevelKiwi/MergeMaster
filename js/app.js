@@ -8,7 +8,7 @@
   var composeApi = MM.initCompose(el, {
     refreshListComposeSelect: listComposeApi.refreshListComposeSelect,
   });
-  var profilesApi = MM.initProfilesUi(el, {
+  var templatesApi = MM.initTemplatesUi(el, {
     refreshComposeSelect: composeApi.refreshComposeSelect,
   });
 
@@ -18,8 +18,8 @@
       t.classList.toggle("is-active", on);
       t.setAttribute("aria-selected", on ? "true" : "false");
     });
-    el.panelProfiles.classList.toggle("is-active", name === "profiles");
-    el.panelProfiles.hidden = name !== "profiles";
+    el.panelTemplates.classList.toggle("is-active", name === "templates");
+    el.panelTemplates.hidden = name !== "templates";
     el.panelCompose.classList.toggle("is-active", name === "compose");
     el.panelCompose.hidden = name !== "compose";
     el.panelListCompose.classList.toggle("is-active", name === "list-compose");
@@ -34,17 +34,17 @@
     });
   });
 
-  function seedFromProfilesFolder() {
-    return fetch("Profiles/Test_Profile.json")
+  function seedFromTemplatesFolder() {
+    return fetch("Templates/Test_Template.json")
       .then(function (res) {
         if (!res.ok) return;
         return res.json();
       })
       .then(function (data) {
         if (data && typeof data.template === "string") {
-          var seeded = MM.normalizeProfile({
+          var seeded = MM.normalizeTemplateRecord({
             id: MM.uid(),
-            name: typeof data.name === "string" ? data.name : "Test Profile",
+            name: typeof data.name === "string" ? data.name : "Test Template",
             template: data.template,
             variableBracketOpen: data.variableBracketOpen,
             variableBracketClose: data.variableBracketClose,
@@ -52,8 +52,8 @@
             globalVariableBracketClose: data.globalVariableBracketClose,
           });
           if (seeded) {
-            MM.state.profiles.push(seeded);
-            MM.saveProfiles(MM.state.profiles);
+            MM.state.templates.push(seeded);
+            MM.saveTemplates(MM.state.templates);
           }
         }
       })
@@ -63,16 +63,16 @@
   }
 
   function init() {
-    MM.state.profiles = MM.loadProfiles();
+    MM.state.templates = MM.loadTemplates();
     var storageUnset = localStorage.getItem(MM.STORAGE_KEY) === null;
     var afterLoad = function () {
-      profilesApi.renderProfileList();
+      templatesApi.renderTemplateList();
       composeApi.refreshComposeSelect();
-      profilesApi.closeEditor();
-      el.profileEmpty.classList.remove("hidden");
+      templatesApi.closeEditor();
+      el.templateEmpty.classList.remove("hidden");
     };
     if (storageUnset) {
-      seedFromProfilesFolder().then(afterLoad, afterLoad);
+      seedFromTemplatesFolder().then(afterLoad, afterLoad);
     } else {
       afterLoad();
     }

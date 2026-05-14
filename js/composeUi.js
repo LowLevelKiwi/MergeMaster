@@ -8,33 +8,33 @@
 
     function refreshComposeSelect() {
       var sel = el.composeSelect;
-      var prev = state.composeProfileId;
+      var prev = state.composeTemplateId;
       sel.innerHTML = "";
-      if (state.profiles.length === 0) {
+      if (state.templates.length === 0) {
         var o = document.createElement("option");
         o.value = "";
-        o.textContent = "No profiles — create one first";
+        o.textContent = "No templates — create one first";
         sel.appendChild(o);
         sel.disabled = true;
-        state.composeProfileId = null;
+        state.composeTemplateId = null;
         refreshListComposeSelect();
         return;
       }
       sel.disabled = false;
-      state.profiles.forEach(function (p) {
+      state.templates.forEach(function (p) {
         var opt = document.createElement("option");
         opt.value = p.id;
         opt.textContent = p.name || "Untitled";
         sel.appendChild(opt);
       });
-      if (prev && state.profiles.some(function (p) {
+      if (prev && state.templates.some(function (p) {
         return p.id === prev;
       })) {
         sel.value = prev;
-        state.composeProfileId = prev;
+        state.composeTemplateId = prev;
       } else {
-        sel.value = state.profiles[0].id;
-        state.composeProfileId = state.profiles[0].id;
+        sel.value = state.templates[0].id;
+        state.composeTemplateId = state.templates[0].id;
       }
       refreshListComposeSelect();
     }
@@ -57,7 +57,7 @@
     }
 
     function runMerge() {
-      var p = state.composeProfileId ? MM.getProfileById(state.composeProfileId) : null;
+      var p = state.composeTemplateId ? MM.getTemplateById(state.composeTemplateId) : null;
       if (!p) {
         el.composeOutput.value = "";
         el.btnCopy.disabled = true;
@@ -82,7 +82,7 @@
     }
 
     function applyCsvRows(header, dataRows) {
-      var p = state.composeProfileId ? MM.getProfileById(state.composeProfileId) : null;
+      var p = state.composeTemplateId ? MM.getTemplateById(state.composeTemplateId) : null;
       if (!p || dataRows.length === 0) return;
 
       var br = MM.bracketPair(p);
@@ -100,7 +100,7 @@
           if (idx >= 0 && state.composeInputs[v]) state.composeInputs[v].value = row[idx] != null ? String(row[idx]) : "";
         });
         runMerge();
-        el.multiRowNote.textContent = "Filled fields from first CSV row.";
+        el.multiRowNote.textContent = "Filled fields from the first source row.";
         return;
       }
 
@@ -115,7 +115,7 @@
       el.composeOutput.value = blocks.join("\n\n---\n\n");
       el.btnCopy.disabled = el.composeOutput.value.length === 0;
       el.multiRowNote.textContent =
-        "Multiple rows: " + dataRows.length + " merged blocks (separated by ---). Edit in the result if needed.";
+        "Multiple source rows: " + dataRows.length + " merged blocks (separated by ---). Edit in the result if needed.";
     }
 
     function updateComposeCsvHint(p) {
@@ -123,7 +123,7 @@
       var br = MM.bracketPair(p);
       var gbr = MM.globalBracketPair(p);
       el.composeVariablesHeading.title =
-        "Fill fields or use CSV. Headers = regular variable names only (not \"" +
+        "Fill fields or use a source file. Headers = regular variable names only (not \"" +
         br.open +
         '" or "' +
         br.close +
@@ -131,25 +131,25 @@
         gbr.open +
         '" … "' +
         gbr.close +
-        '" — set those in the form, not from CSV.';
+        '" — set those in the form, not from the source file.';
     }
 
     function buildComposeFields() {
       el.composeFields.innerHTML = "";
       state.composeInputs = {};
       state.composeGlobalInputs = {};
-      var p = state.composeProfileId ? MM.getProfileById(state.composeProfileId) : null;
+      var p = state.composeTemplateId ? MM.getTemplateById(state.composeTemplateId) : null;
       if (!p) {
-        if (el.composeProfileHintLabel) {
-          el.composeProfileHintLabel.title = "Create a profile first.";
+        if (el.composeTemplateHintLabel) {
+          el.composeTemplateHintLabel.title = "Create a template first.";
         }
         el.composeOutput.value = "";
         el.btnCopy.disabled = true;
         return;
       }
-      if (el.composeProfileHintLabel) {
-        el.composeProfileHintLabel.title =
-          "Fill regular and global variables, or load a CSV whose columns match regular variable names.";
+      if (el.composeTemplateHintLabel) {
+        el.composeTemplateHintLabel.title =
+          "Fill regular and global variables, or load a source file whose columns match regular variable names.";
       }
       updateComposeCsvHint(p);
       var br = MM.bracketPair(p);
@@ -178,7 +178,7 @@
         var gHead = document.createElement("h4");
         gHead.className = "section-title-hint";
         gHead.textContent = "Global variables";
-        gHead.title = "Same value for every row in multi-row CSV and in List compose.";
+        gHead.title = "Same value for every row when the source has multiple rows and in List compose.";
         el.composeFields.appendChild(gHead);
         globalVars.forEach(function (name) {
           var label = document.createElement("label");
@@ -200,7 +200,7 @@
         var rHead = document.createElement("h4");
         rHead.className = "section-title-hint";
         rHead.textContent = "Regular variables";
-        rHead.title = "One value per line; CSV columns map to these names.";
+        rHead.title = "One value per line; source columns map to these names.";
         el.composeFields.appendChild(rHead);
         rowVars.forEach(function (name) {
           var label = document.createElement("label");
@@ -230,23 +230,23 @@
 
     function refreshCompose() {
       refreshComposeSelect();
-      if (state.profiles.length === 0) {
+      if (state.templates.length === 0) {
         el.composeFields.innerHTML = "";
         state.composeInputs = {};
         state.composeGlobalInputs = {};
         el.composeOutput.value = "";
         el.btnCopy.disabled = true;
-        if (el.composeProfileHintLabel) {
-          el.composeProfileHintLabel.title = "No profiles yet. Create one under Profiles.";
+        if (el.composeTemplateHintLabel) {
+          el.composeTemplateHintLabel.title = "No templates yet. Create one under Templates.";
         }
         if (el.composeVariablesHeading) {
           el.composeVariablesHeading.title =
-            "Fill each field, or use CSV below. Column headers should match regular variable names.";
+            "Fill each field, or use a source file below. Column headers should match regular variable names.";
         }
         return;
       }
-      if (!state.composeProfileId) state.composeProfileId = state.profiles[0].id;
-      el.composeSelect.value = state.composeProfileId;
+      if (!state.composeTemplateId) state.composeTemplateId = state.templates[0].id;
+      el.composeSelect.value = state.composeTemplateId;
       buildComposeFields();
     }
 
@@ -257,7 +257,7 @@
       reader.onload = function () {
         var rows = MM.parseCSV(String(reader.result));
         if (rows.length < 2) {
-          alert("CSV needs a header row and at least one data row.");
+          alert("The source file needs a header row and at least one data row.");
           return;
         }
         var header = rows[0];
@@ -274,7 +274,7 @@
     });
 
     el.composeSelect.addEventListener("change", function () {
-      state.composeProfileId = el.composeSelect.value || null;
+      state.composeTemplateId = el.composeSelect.value || null;
       buildComposeFields();
     });
 

@@ -13,34 +13,34 @@
   <div class="app">
     <header class="header">
       <h1>MergeMaster</h1>
-      <p class="tagline">Bulk messages from preset profiles with variables</p>
+      <p class="tagline">Bulk messages from saved templates with variables</p>
     </header>
 
     <nav class="tabs" role="tablist">
-      <button type="button" class="tab is-active" data-tab="profiles" role="tab" aria-selected="true">Profiles</button>
+      <button type="button" class="tab is-active" data-tab="templates" role="tab" aria-selected="true">Templates</button>
       <button type="button" class="tab" data-tab="compose" role="tab" aria-selected="false">Compose</button>
       <button type="button" class="tab" data-tab="list-compose" role="tab" aria-selected="false">List compose</button>
     </nav>
 
     <main>
-      <!-- Profiles -->
-      <section id="panel-profiles" class="panel is-active" role="tabpanel">
+      <!-- Templates -->
+      <section id="panel-templates" class="panel is-active" role="tabpanel">
         <div class="toolbar">
-          <button type="button" id="btn-new-profile" class="btn btn-primary">New profile</button>
+          <button type="button" id="btn-new-template" class="btn btn-primary">New template</button>
           <label class="btn btn-secondary file-label">
             Import JSON
-            <input type="file" id="input-import-profile" accept=".json,application/json" hidden />
+            <input type="file" id="input-import-template" accept=".json,application/json" hidden />
           </label>
         </div>
-        <div class="profiles-layout">
-          <ul id="profile-list" class="profile-list" aria-label="Saved profiles"></ul>
-          <div id="profile-editor" class="profile-editor card hidden">
-            <h2 id="editor-title">Edit profile</h2>
+        <div class="templates-layout">
+          <ul id="template-list" class="template-list" aria-label="Saved templates"></ul>
+          <div id="template-editor" class="template-editor card hidden">
+            <h2 id="editor-title">Edit template</h2>
             <label class="field">
               <span>Name</span>
               <input type="text" id="edit-name" autocomplete="off" />
             </label>
-            <h3 class="section-title-hint" id="hint-profile-regular" tabindex="0">Regular brackets</h3>
+            <h3 class="section-title-hint" id="hint-template-regular" tabindex="0">Regular brackets</h3>
             <div class="delim-row">
               <label class="field">
                 <span>Regular open bracket</span>
@@ -51,7 +51,7 @@
                 <input type="text" id="edit-bracket-close" autocomplete="off" maxlength="32" spellcheck="false" />
               </label>
             </div>
-            <h3 class="section-title-hint" id="hint-profile-global" tabindex="0">Global brackets</h3>
+            <h3 class="section-title-hint" id="hint-template-global" tabindex="0">Global brackets</h3>
             <div class="delim-row">
               <label class="field">
                 <span>Global open bracket</span>
@@ -64,24 +64,24 @@
             </div>
             <label class="field">
               <span
-                id="hint-profile-template-label"
+                id="hint-template-body-label"
                 class="field-label-hint"
                 tabindex="0"
                 title="Regular and global placeholders can both appear. Wrap each variable name with your regular or global bracket pair."
                 >Template</span>
               <textarea id="edit-template" rows="12" placeholder="[[campaign]] Hello {{name}}, your code is {{code}}."></textarea>
             </label>
-            <h3 class="section-title-hint" id="hint-profile-detected" tabindex="0">Detected</h3>
+            <h3 class="section-title-hint" id="hint-template-detected" tabindex="0">Detected</h3>
             <p class="hint hint-detected-compact" id="detected-inline" aria-live="polite"></p>
             <div class="btn-row">
-              <button type="button" id="btn-save-profile" class="btn btn-primary">Save</button>
-              <button type="button" id="btn-export-profile" class="btn btn-secondary">Export JSON</button>
-              <button type="button" id="btn-delete-profile" class="btn btn-danger">Delete</button>
+              <button type="button" id="btn-save-template" class="btn btn-primary">Save</button>
+              <button type="button" id="btn-export-template" class="btn btn-secondary">Export JSON</button>
+              <button type="button" id="btn-delete-template" class="btn btn-danger">Delete</button>
               <button type="button" id="btn-cancel-edit" class="btn btn-ghost">Cancel</button>
             </div>
           </div>
-          <div id="profile-empty" class="empty-state card">
-            <p>Select a profile to edit, or create a new one. Regular placeholders use one bracket pair (defaults <code>{{</code> … <code>}}</code>); optional globals use another (defaults <code>[[</code> … <code>]]</code>), filled once per list in List compose.</p>
+          <div id="template-empty" class="empty-state card">
+            <p>Select a template to edit, or create a new one. Regular placeholders use one bracket pair (defaults <code>{{</code> … <code>}}</code>); optional globals use another (defaults <code>[[</code> … <code>]]</code>), filled once per list in List compose.</p>
           </div>
         </div>
       </section>
@@ -91,12 +91,12 @@
         <div class="compose-top card">
           <label class="field">
             <span
-              id="compose-profile-hint-label"
+              id="compose-template-hint-label"
               class="field-label-hint"
               tabindex="0"
-              title="Choose a profile, then fill variables or load a CSV."
-              >Profile</span>
-            <select id="compose-profile-select"></select>
+              title="Choose a template, then fill variables or load a source file."
+              >Template</span>
+            <select id="compose-template-select"></select>
           </label>
         </div>
 
@@ -106,7 +106,7 @@
               id="compose-variables-heading"
               class="section-title-hint"
               tabindex="0"
-              title="Fill fields or load a CSV. Hover again after choosing a profile for bracket-specific tips."
+              title="Fill fields or load a source file. Hover again after choosing a template for bracket-specific tips."
             >
               Variables
             </h3>
@@ -115,16 +115,16 @@
               <span
                 class="field-label-hint"
                 tabindex="0"
-                title="One header row naming regular variables; each data row fills one merged block. Clear file to edit fields again."
-                >CSV (headers = variable names)</span>
+                title="Comma-separated source: one header row naming regular variables; each data row fills one merged block. Clear file to edit fields again."
+                >Source (headers = variable names)</span>
               <input type="file" id="input-csv" accept=".csv,text/csv" />
             </label>
-            <button type="button" id="btn-clear-csv" class="btn btn-ghost btn-small">Clear CSV file</button>
+            <button type="button" id="btn-clear-csv" class="btn btn-ghost btn-small">Clear source file</button>
           </div>
 
           <div class="card output-card">
             <div class="output-header">
-              <h3 id="compose-result-heading" class="section-title-hint" tabindex="0" title="Merged text from the selected profile. Multi-row CSV may add a note below.">Result</h3>
+              <h3 id="compose-result-heading" class="section-title-hint" tabindex="0" title="Merged text from the selected saved template. Multiple source rows may add a note below.">Result</h3>
               <button type="button" id="btn-copy" class="btn btn-primary" disabled>Copy to clipboard</button>
             </div>
             <textarea id="compose-output" readonly rows="16" placeholder="Merged text appears here…"></textarea>
@@ -133,15 +133,15 @@
         </div>
       </section>
 
-      <!-- List compose: profile | CSV toolbar, rows, add row -->
+      <!-- List compose: template | Source toolbar, rows, add row -->
       <section id="panel-list-compose" class="panel" role="tabpanel" hidden>
         <div class="card list-compose-toolbar">
           <div class="list-compose-toolbar-grid">
             <div class="list-compose-col">
-              <h3 class="list-compose-col-title section-title-hint" id="list-compose-profile-heading" tabindex="0">Profile</h3>
+              <h3 class="list-compose-col-title section-title-hint" id="list-compose-template-heading" tabindex="0">Template</h3>
               <label class="field">
-                <span>Profile</span>
-                <select id="list-compose-profile-select"></select>
+                <span>Template</span>
+                <select id="list-compose-template-select"></select>
               </label>
             </div>
             <div class="list-compose-col list-compose-col-divider">
@@ -149,7 +149,7 @@
                 class="list-compose-col-title section-title-hint"
                 id="list-compose-globals-heading"
                 tabindex="0"
-                title="Filled once for the whole list. CSV columns only map to regular variable names (not global bracket text)."
+                title="Filled once for the whole list. Source columns only map to regular variable names (not global bracket text)."
               >
                 Globals
               </h3>
@@ -158,14 +158,14 @@
             <div class="list-compose-col list-compose-col-divider">
               <h3
                 class="list-compose-col-title section-title-hint"
-                id="list-compose-csv-heading"
+                id="list-compose-source-heading"
                 tabindex="0"
-                title="Import a CSV with a header row (regular variable names) and one data row per list item. Cleared when you clear the list."
+                title="Import a source file with a header row (regular variable names) and one data row per list item. Cleared when you clear the list."
               >
-                CSV
+                Source
               </h3>
               <label class="field file-block">
-                <span>CSV file</span>
+                <span>Source file</span>
                 <input type="file" id="list-input-csv" accept=".csv,text/csv" />
               </label>
               <button type="button" id="list-btn-clear" class="btn btn-ghost btn-small">Clear list &amp; file</button>
@@ -174,11 +174,11 @@
         </div>
 
         <div class="list-compose-rows-section">
-          <div class="list-compose-section-label section-title-hint" id="list-compose-rows-heading" tabindex="0" title="Each CSV data row or manual row becomes one preview with Copy. Globals apply to every row.">
+          <div class="list-compose-section-label section-title-hint" id="list-compose-rows-heading" tabindex="0" title="Each source data row or manual row becomes one preview with Copy. Globals apply to every row.">
             Rows
           </div>
           <div id="list-compose-empty" class="empty-state card list-compose-empty">
-            <p>No rows yet. Import a CSV (header + data rows) or use <strong>Add row</strong> to enter values by hand.</p>
+            <p>No rows yet. Import a source file (header + data rows) or use <strong>Add row</strong> to enter values by hand.</p>
           </div>
           <div id="list-compose-rows" class="list-compose-rows"></div>
         </div>
@@ -193,13 +193,13 @@
   <script src="js/state.js"></script>
   <script src="js/template.js"></script>
   <script src="js/csv.js"></script>
-  <script src="js/profilesStore.js"></script>
+  <script src="js/templatesStore.js"></script>
   <script src="js/clipboard.js"></script>
   <script src="js/dom.js"></script>
-  <script src="js/profileHelpers.js"></script>
+  <script src="js/templateHelpers.js"></script>
   <script src="js/listComposeUi.js"></script>
   <script src="js/composeUi.js"></script>
-  <script src="js/profilesUi.js"></script>
+  <script src="js/templatesUi.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
