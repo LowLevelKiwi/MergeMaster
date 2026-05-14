@@ -166,7 +166,7 @@ body {
   padding: 1.25rem;
 }
 
-.profiles-layout {
+.templates-layout {
   display: grid;
   grid-template-columns: minmax(200px, 260px) 1fr;
   gap: 1rem;
@@ -174,22 +174,22 @@ body {
 }
 
 @media (max-width: 720px) {
-  .profiles-layout {
+  .templates-layout {
     grid-template-columns: 1fr;
   }
 }
 
-.profile-list {
+.template-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.profile-list li {
+.template-list li {
   margin-bottom: 0.35rem;
 }
 
-.profile-list button {
+.template-list button {
   width: 100%;
   text-align: left;
   font: inherit;
@@ -201,16 +201,16 @@ body {
   cursor: pointer;
 }
 
-.profile-list button:hover {
+.template-list button:hover {
   background: var(--surface-hover);
 }
 
-.profile-list button.is-selected {
+.template-list button.is-selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
 }
 
-.profile-editor.hidden,
+.template-editor.hidden,
 .empty-state.hidden {
   display: none;
 }
@@ -300,7 +300,7 @@ body {
   color: var(--text);
 }
 
-.profile-editor h3.section-title-hint {
+.template-editor h3.section-title-hint {
   margin: 0.85rem 0 0.4rem;
   font-size: 0.72rem;
   font-weight: 700;
@@ -309,7 +309,7 @@ body {
   color: var(--muted);
 }
 
-.profile-editor h3.section-title-hint:first-of-type {
+.template-editor h3.section-title-hint:first-of-type {
   margin-top: 0.25rem;
 }
 

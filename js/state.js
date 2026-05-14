@@ -2,10 +2,10 @@
   "use strict";
   var MM = window.MergeMaster;
   MM.state = {
-    profiles: [],
+    templates: [],
     editingId: null,
-    composeProfileId: null,
-    listComposeProfileId: null,
+    composeTemplateId: null,
+    listComposeTemplateId: null,
     composeInputs: {},
     composeGlobalInputs: {},
   };

@@ -1,0 +1,8 @@
+{
+  "name": "Test Template",
+  "template": "[[campaign]] Hello {{name}}, your code is {{code}}",
+  "variableBracketOpen": "{{",
+  "variableBracketClose": "}}",
+  "globalVariableBracketOpen": "[[",
+  "globalVariableBracketClose": "]]"
+}

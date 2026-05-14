@@ -10,19 +10,19 @@
     function refreshListComposeSelect() {
       var sel = el.listComposeSelect;
       if (!sel) return;
-      var prev = state.listComposeProfileId;
+      var prev = state.listComposeTemplateId;
       sel.innerHTML = "";
-      if (state.profiles.length === 0) {
+      if (state.templates.length === 0) {
         var o = document.createElement("option");
         o.value = "";
-        o.textContent = "No profiles — create one first";
+        o.textContent = "No templates — create one first";
         sel.appendChild(o);
         sel.disabled = true;
-        state.listComposeProfileId = null;
+        state.listComposeTemplateId = null;
         return;
       }
       sel.disabled = false;
-      state.profiles.forEach(function (p) {
+      state.templates.forEach(function (p) {
         var opt = document.createElement("option");
         opt.value = p.id;
         opt.textContent = p.name || "Untitled";
@@ -30,23 +30,23 @@
       });
       if (
         prev &&
-        state.profiles.some(function (p) {
+        state.templates.some(function (p) {
           return p.id === prev;
         })
       ) {
         sel.value = prev;
-        state.listComposeProfileId = prev;
+        state.listComposeTemplateId = prev;
       } else if (
-        state.composeProfileId &&
-        state.profiles.some(function (p) {
-          return p.id === state.composeProfileId;
+        state.composeTemplateId &&
+        state.templates.some(function (p) {
+          return p.id === state.composeTemplateId;
         })
       ) {
-        sel.value = state.composeProfileId;
-        state.listComposeProfileId = state.composeProfileId;
+        sel.value = state.composeTemplateId;
+        state.listComposeTemplateId = state.composeTemplateId;
       } else {
-        sel.value = state.profiles[0].id;
-        state.listComposeProfileId = state.profiles[0].id;
+        sel.value = state.templates[0].id;
+        state.listComposeTemplateId = state.templates[0].id;
       }
     }
 
@@ -95,7 +95,7 @@
     }
 
     function appendListComposeCsvCards(header, dataRows) {
-      var p = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+      var p = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
       if (!p || dataRows.length === 0) return;
       var globalVals = readListComposeGlobalValues();
       removeListComposeCsvRows();
@@ -145,16 +145,16 @@
     }
 
     function renderListComposeFromCsv(header, dataRows) {
-      var p = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+      var p = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
       if (!p || dataRows.length === 0) return;
       listComposeCsvData = { header: header, rows: dataRows };
       appendListComposeCsvCards(header, dataRows);
     }
 
     function appendManualListRow() {
-      var p = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+      var p = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
       if (!p) {
-        alert("Choose a profile first.");
+        alert("Choose a template first.");
         return;
       }
       var br = MM.bracketPair(p);
@@ -186,7 +186,7 @@
       var fieldMap = {};
 
       function refreshPreview() {
-        var cur = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+        var cur = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
         if (!cur) {
           pre.textContent = "";
           return;
@@ -245,21 +245,21 @@
 
     function refreshListCompose() {
       refreshListComposeSelect();
-      if (state.profiles.length === 0) {
+      if (state.templates.length === 0) {
         clearListComposeUI();
         rebuildListComposeGlobalFields(null);
-        if (el.listComposeProfileHeading) {
-          el.listComposeProfileHeading.title = "Create a profile first, then import a CSV here.";
+        if (el.listComposeTemplateHeading) {
+          el.listComposeTemplateHeading.title = "Create a template first, then import a source file here.";
         }
         return;
       }
-      var p = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+      var p = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
       rebuildListComposeGlobalFields(p);
-      if (p && el.listComposeProfileHeading) {
+      if (p && el.listComposeTemplateHeading) {
         var br = MM.bracketPair(p);
         var gbr = MM.globalBracketPair(p);
-        el.listComposeProfileHeading.title =
-          "CSV header = regular variable names (not \"" +
+        el.listComposeTemplateHeading.title =
+          "Source header = regular variable names (not \"" +
           br.open +
           '" or "' +
           br.close +
@@ -280,7 +280,7 @@
     }
 
     el.listComposeSelect.addEventListener("change", function () {
-      state.listComposeProfileId = el.listComposeSelect.value || null;
+      state.listComposeTemplateId = el.listComposeSelect.value || null;
       clearListComposeUI();
       refreshListCompose();
     });
@@ -292,15 +292,15 @@
       reader.onload = function () {
         var rows = MM.parseCSV(String(reader.result));
         if (rows.length < 2) {
-          alert("CSV needs a header row and at least one data row.");
+          alert("The source file needs a header row and at least one data row.");
           el.listInputCsv.value = "";
           return;
         }
         var header = rows[0];
         var dataRows = rows.slice(1);
-        var p2 = state.listComposeProfileId ? MM.getProfileById(state.listComposeProfileId) : null;
+        var p2 = state.listComposeTemplateId ? MM.getTemplateById(state.listComposeTemplateId) : null;
         if (!p2) {
-          alert("Choose a profile first.");
+          alert("Choose a template first.");
           el.listInputCsv.value = "";
           return;
         }

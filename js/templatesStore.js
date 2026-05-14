@@ -2,11 +2,26 @@
   "use strict";
   var MM = window.MergeMaster;
 
+  var LEGACY_STORAGE_KEY = "mergemaster_profiles";
+
   function uid() {
-    return "p_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    return "t_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
   }
 
-  function normalizeProfile(raw) {
+  function migrateFromLegacyStorage() {
+    try {
+      if (localStorage.getItem(MM.STORAGE_KEY)) return;
+      var legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacy) {
+        localStorage.setItem(MM.STORAGE_KEY, legacy);
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+    } catch (e) {
+      /* ignore quota or privacy mode */
+    }
+  }
+
+  function normalizeTemplateRecord(raw) {
     if (!raw || typeof raw.template !== "string") return null;
     if (!raw.id || typeof raw.id !== "string") return null;
     var b = MM.normalizeBrackets(raw.variableBracketOpen, raw.variableBracketClose);
@@ -27,7 +42,8 @@
     };
   }
 
-  function loadProfiles() {
+  function loadTemplates() {
+    migrateFromLegacyStorage();
     try {
       var raw = localStorage.getItem(MM.STORAGE_KEY);
       if (!raw) return [];
@@ -35,7 +51,7 @@
       if (!Array.isArray(arr)) return [];
       return arr
         .map(function (p) {
-          return normalizeProfile(p);
+          return normalizeTemplateRecord(p);
         })
         .filter(Boolean);
     } catch (e) {
@@ -43,12 +59,12 @@
     }
   }
 
-  function saveProfiles(list) {
+  function saveTemplates(list) {
     localStorage.setItem(MM.STORAGE_KEY, JSON.stringify(list));
   }
 
   MM.uid = uid;
-  MM.normalizeProfile = normalizeProfile;
-  MM.loadProfiles = loadProfiles;
-  MM.saveProfiles = saveProfiles;
+  MM.normalizeTemplateRecord = normalizeTemplateRecord;
+  MM.loadTemplates = loadTemplates;
+  MM.saveTemplates = saveTemplates;
 })();
