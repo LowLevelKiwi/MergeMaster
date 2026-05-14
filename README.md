@@ -47,7 +47,7 @@ If any of the bracket fields are missing, they default to `{{` / `}}` for regula
 
 ## Running the app
 
-Open `index.html` in a modern browser, or serve the project folder with any static server (for example `npx serve .`).
+Open `index.html` in a modern browser, or go to https://lowlevelkiwi.github.io/MergeMaster/ to access the hosted version
 
 ---
 
