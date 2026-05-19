@@ -17,14 +17,15 @@
     </header>
 
     <nav class="tabs" role="tablist">
-      <button type="button" class="tab is-active" data-tab="templates" role="tab" aria-selected="true">Templates</button>
-      <button type="button" class="tab" data-tab="compose" role="tab" aria-selected="false">Compose</button>
-      <button type="button" class="tab" data-tab="list-compose" role="tab" aria-selected="false">List compose</button>
+      <button type="button" class="tab is-active" id="tab-templates" data-tab="templates" role="tab" aria-controls="panel-templates" aria-selected="true">Templates</button>
+      <button type="button" class="tab" id="tab-compose" data-tab="compose" role="tab" aria-controls="panel-compose" aria-selected="false">Compose</button>
+      <button type="button" class="tab" id="tab-list-compose" data-tab="list-compose" role="tab" aria-controls="panel-list-compose" aria-selected="false">List compose</button>
+      <button type="button" class="tab tab-help" id="tab-help" data-tab="help" role="tab" aria-controls="panel-help" aria-selected="false">Help</button>
     </nav>
 
     <main>
       <!-- Templates -->
-      <section id="panel-templates" class="panel is-active" role="tabpanel">
+      <section id="panel-templates" class="panel is-active" role="tabpanel" aria-labelledby="tab-templates">
         <div class="toolbar">
           <button type="button" id="btn-new-template" class="btn btn-primary">New template</button>
           <label class="btn btn-secondary file-label">
@@ -67,12 +68,12 @@
                 id="hint-template-body-label"
                 class="field-label-hint"
                 tabindex="0"
-                title="Regular and global placeholders can both appear. Wrap each variable name with your regular or global bracket pair."
+                title="Regular and global placeholders can both appear. Wrap each variable name with your regular or global bracket pair. Names are case-insensitive; detected names are shown with a capital first letter (e.g. Name)."
                 >Template</span>
               <textarea id="edit-template" rows="12" placeholder="[[campaign]] Hello {{name}}, your code is {{code}}."></textarea>
             </label>
             <h3 class="section-title-hint" id="hint-template-detected" tabindex="0">Detected</h3>
-            <p class="hint hint-detected-compact" id="detected-inline" aria-live="polite"></p>
+            <p class="hint hint-detected-compact" id="detected-inline" aria-live="polite" title="Names found in the template. Case-insensitive: name, Name, and NAME count as one variable. Shown here with a capital first letter."></p>
             <div class="btn-row">
               <button type="button" id="btn-save-template" class="btn btn-primary">Save</button>
               <button type="button" id="btn-export-template" class="btn btn-secondary">Export JSON</button>
@@ -81,20 +82,20 @@
             </div>
           </div>
           <div id="template-empty" class="empty-state card">
-            <p>Select a template to edit, or create a new one. Regular placeholders use one bracket pair (defaults <code>{{</code> … <code>}}</code>); optional globals use another (defaults <code>[[</code> … <code>]]</code>), filled once per list in List compose.</p>
+            <p>Select a template to edit, or create a new one. Regular placeholders use one bracket pair (defaults <code>{{</code> … <code>}}</code>); optional globals use another (defaults <code>[[</code> … <code>]]</code>), filled once per list in List compose. Variable names are case-insensitive; the editor lists each name once with a capital first letter (e.g. <code>Name</code>).</p>
           </div>
         </div>
       </section>
 
       <!-- Compose -->
-      <section id="panel-compose" class="panel" role="tabpanel" hidden>
+      <section id="panel-compose" class="panel" role="tabpanel" aria-labelledby="tab-compose" hidden>
         <div class="compose-top card">
           <label class="field">
             <span
               id="compose-template-hint-label"
               class="field-label-hint"
               tabindex="0"
-              title="Choose a template, then fill variables or load a source file."
+              title="Choose a template, then fill variables or load a source file. Variable names are case-insensitive; field labels use a capital first letter."
               >Template</span>
             <select id="compose-template-select"></select>
           </label>
@@ -106,7 +107,7 @@
               id="compose-variables-heading"
               class="section-title-hint"
               tabindex="0"
-              title="Fill fields or load a source file. Hover again after choosing a template for bracket-specific tips."
+              title="Fill fields or load a source file. Names are case-insensitive and shown with a capital first letter (e.g. Name). Source headers match the same way. Hover again after choosing a template for bracket-specific tips."
             >
               Variables
             </h3>
@@ -115,7 +116,7 @@
               <span
                 class="field-label-hint"
                 tabindex="0"
-                title="Comma-separated source: one header row naming regular variables; each data row fills one merged block. Clear file to edit fields again."
+                title="Comma-separated source: one header row naming regular variables (case-insensitive, e.g. NAME matches Name); each data row fills one merged block. Clear file to edit fields again."
                 >Source (headers = variable names)</span>
               <input type="file" id="input-csv" accept=".csv,text/csv" />
             </label>
@@ -134,7 +135,7 @@
       </section>
 
       <!-- List compose: template | Source toolbar, rows, add row -->
-      <section id="panel-list-compose" class="panel" role="tabpanel" hidden>
+      <section id="panel-list-compose" class="panel" role="tabpanel" aria-labelledby="tab-list-compose" hidden>
         <div class="card list-compose-toolbar">
           <div class="list-compose-toolbar-grid">
             <div class="list-compose-col">
@@ -149,7 +150,7 @@
                 class="list-compose-col-title section-title-hint"
                 id="list-compose-globals-heading"
                 tabindex="0"
-                title="Filled once for the whole list. Source columns only map to regular variable names (not global bracket text)."
+                title="Filled once for the whole list. Labels use a capital first letter. Source columns only map to regular variable names (not global bracket text), case-insensitively."
               >
                 Globals
               </h3>
@@ -160,7 +161,7 @@
                 class="list-compose-col-title section-title-hint"
                 id="list-compose-source-heading"
                 tabindex="0"
-                title="Import a source file with a header row (regular variable names) and one data row per list item. Cleared when you clear the list."
+                title="Import a source file with a header row (regular variable names, case-insensitive) and one data row per list item. Cleared when you clear the list."
               >
                 Source
               </h3>
@@ -174,7 +175,7 @@
         </div>
 
         <div class="list-compose-rows-section">
-          <div class="list-compose-section-label section-title-hint" id="list-compose-rows-heading" tabindex="0" title="Each source data row or manual row becomes one preview with Copy. Globals apply to every row.">
+          <div class="list-compose-section-label section-title-hint" id="list-compose-rows-heading" tabindex="0" title="Each row shows a merged preview and its own Copy button.">
             Rows
           </div>
           <div id="list-compose-empty" class="empty-state card list-compose-empty">
@@ -185,6 +186,79 @@
 
         <div class="list-compose-footer">
           <button type="button" id="btn-list-add-row" class="btn btn-secondary">Add row</button>
+        </div>
+      </section>
+
+      <!-- Help -->
+      <section id="panel-help" class="panel panel-help" role="tabpanel" aria-labelledby="tab-help" hidden>
+        <div class="help-intro card">
+          <h2>How MergeMaster works</h2>
+          <p>
+            MergeMaster fills placeholders in your message text so you can send consistent, personalized messages. Everything runs in your browser—there is no server. Use the tabs above to switch between editing templates, composing one message at a time, or building a list of many messages.
+          </p>
+        </div>
+
+        <div class="help-grid">
+          <article class="card help-card">
+            <h3>Templates</h3>
+            <p>
+              A <strong>template</strong> is a saved preset: a <strong>name</strong>, the <strong>message body</strong> (the field labeled “Template”), and two bracket pairs—<strong>regular</strong> and <strong>global</strong>—that wrap variable names in the text.
+            </p>
+            <ul>
+              <li><strong>Regular variables</strong> default to <code>{{</code> … <code>}}</code> (for example <code>{{name}}</code>). They are filled per message or per row.</li>
+              <li><strong>Global variables</strong> default to <code>[[</code> … <code>]]</code> (for example <code>[[campaign]]</code>). On <strong>List compose</strong>, one value applies to every row.</li>
+              <li><strong>Case-insensitive names</strong> — <code>{{name}}</code>, <code>{{Name}}</code>, and <code>{{NAME}}</code> are the same variable. The editor and compose screens list each name once, with a <strong>capital first letter</strong> (e.g. <code>Name</code>). Your template text can keep any casing you like.</li>
+            </ul>
+            <p>
+              <strong>New template</strong> creates a preset; <strong>Save</strong> stores your edits in this browser. <strong>Export JSON</strong> / <strong>Import JSON</strong> moves templates between devices or backs them up. Hover the small section titles in the editor for more detail on brackets and detected names.
+            </p>
+          </article>
+
+          <article class="card help-card">
+            <h3>Compose</h3>
+            <p>
+              Pick which saved template to use, then fill the <strong>Variables</strong> fields that appear. The <strong>Result</strong> updates as you type. Use <strong>Copy to clipboard</strong> when you are done.
+            </p>
+            <p>
+              You can load a <strong>source file</strong> instead of typing: a comma-separated file whose <strong>first row</strong> lists variable names (matching your regular placeholders, without the brackets). Header matching is <strong>case-insensitive</strong> (a column <code>NAME</code> fills variable <code>Name</code>). One data row fills the form; several data rows produce several merged blocks in the result, separated by a line of <code>---</code>.
+            </p>
+          </article>
+
+          <article class="card help-card">
+            <h3>List compose</h3>
+            <p>
+              Built for many recipients at once. Choose a template, set any <strong>Globals</strong> once (labels use a capital first letter; names are case-insensitive), then import a <strong>source file</strong> with a header row plus one row per person. Column headers match variable names case-insensitively. You get one card per row, each with its own <strong>Copy</strong> button.
+            </p>
+            <p>
+              <strong>Add row</strong> adds a manual row if you do not want to use a file. <strong>Clear list &amp; file</strong> removes imported rows and clears the file input. Changing the template also clears the list so previews always match the selected preset.
+            </p>
+          </article>
+
+          <article class="card help-card">
+            <h3>Source files</h3>
+            <p>
+              “Source” means a small spreadsheet-style file (commonly exported as <code>.csv</code>): the first row is column headers; those names should match your <strong>regular</strong> variable names. Matching is <strong>case-insensitive</strong> (header <code>email</code>, <code>Email</code>, and <code>EMAIL</code> all map to the same variable). Globals are not read from the file—set them in the <strong>Globals</strong> section on List compose.
+            </p>
+          </article>
+
+          <article class="card help-card">
+            <h3>Variable names</h3>
+            <p>
+              Everywhere in MergeMaster, a variable name is treated the same no matter how you capitalize it in the template or in a source file. <code>name</code>, <code>Name</code>, and <code>NAME</code> are one variable.
+            </p>
+            <ul>
+              <li>In the <strong>template text</strong>, you can write placeholders in any casing; duplicates that differ only by case count as a single variable.</li>
+              <li>On <strong>Compose</strong> and <strong>List compose</strong>, field labels are shown with a <strong>capital first letter</strong> (e.g. <code>Name</code>) for readability.</li>
+              <li>In <strong>source files</strong>, column headers are matched case-insensitively to those variable names.</li>
+            </ul>
+          </article>
+
+          <article class="card help-card">
+            <h3>Your data</h3>
+            <p>
+              Templates are stored in <strong>localStorage</strong> on this device only. Clearing site data in your browser will remove them unless you have exported JSON. If you opened an older version of MergeMaster here, your data may have been moved automatically to the current storage key.
+            </p>
+          </article>
         </div>
       </section>
     </main>

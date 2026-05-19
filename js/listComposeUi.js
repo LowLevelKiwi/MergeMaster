@@ -267,7 +267,8 @@
           gbr.open +
           '" … "' +
           gbr.close +
-          '" — fill those once in Globals (same for every list row). Add row = hand-filled regular variables only.';
+          '" — fill those once in Globals (same for every list row). Add row = hand-filled regular variables only. ' +
+          MM.VARIABLE_NAME_HELP;
       }
       if (listComposeCsvData) {
         appendListComposeCsvCards(listComposeCsvData.header, listComposeCsvData.rows);

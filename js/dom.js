@@ -8,6 +8,7 @@
       panelTemplates: document.getElementById("panel-templates"),
       panelCompose: document.getElementById("panel-compose"),
       panelListCompose: document.getElementById("panel-list-compose"),
+      panelHelp: document.getElementById("panel-help"),
       templateList: document.getElementById("template-list"),
       templateEditor: document.getElementById("template-editor"),
       templateEmpty: document.getElementById("template-empty"),

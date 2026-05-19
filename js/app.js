@@ -24,6 +24,8 @@
     el.panelCompose.hidden = name !== "compose";
     el.panelListCompose.classList.toggle("is-active", name === "list-compose");
     el.panelListCompose.hidden = name !== "list-compose";
+    el.panelHelp.classList.toggle("is-active", name === "help");
+    el.panelHelp.hidden = name !== "help";
     if (name === "compose") composeApi.refreshCompose();
     if (name === "list-compose") listComposeApi.refreshListCompose();
   }
