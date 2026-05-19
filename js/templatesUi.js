@@ -36,7 +36,8 @@
           b.open +
           "variableName" +
           b.close +
-          ". In JSON export: variableBracketOpen and variableBracketClose. Defaults: {{ and }}.";
+          ". In JSON export: variableBracketOpen and variableBracketClose. Defaults: {{ and }}. " +
+          MM.VARIABLE_NAME_HELP;
       }
       if (el.hintTemplateGlobal) {
         el.hintTemplateGlobal.title =
@@ -44,7 +45,8 @@
           g.open +
           "globalName" +
           g.close +
-          ". In JSON: globalVariableBracketOpen and globalVariableBracketClose. Defaults: [[ and ]].";
+          ". In JSON: globalVariableBracketOpen and globalVariableBracketClose. Defaults: [[ and ]]. " +
+          MM.VARIABLE_NAME_HELP;
       }
     }
 
@@ -62,7 +64,8 @@
       }
       if (el.hintTemplateDetected) {
         el.hintTemplateDetected.title =
-          "Names found in the template. Regular names map to source columns or per-line fields; globals are filled once for the whole list.";
+          "Names found in the template (shown with a capital first letter). Regular names map to source columns or per-line fields; globals are filled once for the whole list. " +
+          MM.VARIABLE_NAME_HELP;
       }
       updateBracketDescriptorTitles();
     }

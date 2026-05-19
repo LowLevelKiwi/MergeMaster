@@ -88,16 +88,19 @@
       var br = MM.bracketPair(p);
       var vars = MM.extractVariables(p.template, br.open, br.close);
       var globalVals = readComposeGlobalValues();
-      var norm = function (s) {
-        return s.trim().toLowerCase();
-      };
-      var headerNorm = header.map(norm);
+      var headerNorm = header.map(MM.normalizeVariableName);
 
       if (dataRows.length === 1) {
         var row = dataRows[0];
         vars.forEach(function (v) {
-          var idx = headerNorm.indexOf(norm(v));
-          if (idx >= 0 && state.composeInputs[v]) state.composeInputs[v].value = row[idx] != null ? String(row[idx]) : "";
+          var idx = headerNorm.indexOf(MM.normalizeVariableName(v));
+          if (idx < 0) return;
+          var inputKey = Object.keys(state.composeInputs).find(function (k) {
+            return MM.normalizeVariableName(k) === MM.normalizeVariableName(v);
+          });
+          if (inputKey && state.composeInputs[inputKey]) {
+            state.composeInputs[inputKey].value = row[idx] != null ? String(row[idx]) : "";
+          }
         });
         runMerge();
         el.multiRowNote.textContent = "Filled fields from the first source row.";
@@ -118,6 +121,11 @@
         "Multiple source rows: " + dataRows.length + " merged blocks (separated by ---). Edit in the result if needed.";
     }
 
+    function clearComposeSourceFile() {
+      if (el.inputCsv) el.inputCsv.value = "";
+      el.multiRowNote.textContent = "";
+    }
+
     function updateComposeCsvHint(p) {
       if (!el.composeVariablesHeading) return;
       var br = MM.bracketPair(p);
@@ -131,7 +139,8 @@
         gbr.open +
         '" … "' +
         gbr.close +
-        '" — set those in the form, not from the source file.';
+        '" — set those in the form, not from the source file. ' +
+        MM.VARIABLE_NAME_HELP;
     }
 
     function buildComposeFields() {
@@ -149,7 +158,8 @@
       }
       if (el.composeTemplateHintLabel) {
         el.composeTemplateHintLabel.title =
-          "Fill regular and global variables, or load a source file whose columns match regular variable names.";
+          "Fill regular and global variables, or load a source file whose columns match regular variable names. " +
+          MM.VARIABLE_NAME_HELP;
       }
       updateComposeCsvHint(p);
       var br = MM.bracketPair(p);
@@ -178,7 +188,8 @@
         var gHead = document.createElement("h4");
         gHead.className = "section-title-hint";
         gHead.textContent = "Global variables";
-        gHead.title = "Same value for every row when the source has multiple rows and in List compose.";
+        gHead.title =
+          "Same value for every row when the source has multiple rows and in List compose. " + MM.VARIABLE_NAME_HELP;
         el.composeFields.appendChild(gHead);
         globalVars.forEach(function (name) {
           var label = document.createElement("label");
@@ -200,7 +211,7 @@
         var rHead = document.createElement("h4");
         rHead.className = "section-title-hint";
         rHead.textContent = "Regular variables";
-        rHead.title = "One value per line; source columns map to these names.";
+        rHead.title = "One value per line; source columns map to these names (case-insensitive). " + MM.VARIABLE_NAME_HELP;
         el.composeFields.appendChild(rHead);
         rowVars.forEach(function (name) {
           var label = document.createElement("label");
@@ -241,7 +252,8 @@
         }
         if (el.composeVariablesHeading) {
           el.composeVariablesHeading.title =
-            "Fill each field, or use a source file below. Column headers should match regular variable names.";
+            "Fill each field, or use a source file below. Column headers should match regular variable names (case-insensitive). " +
+            MM.VARIABLE_NAME_HELP;
         }
         return;
       }
@@ -268,13 +280,13 @@
     });
 
     el.btnClearCsv.addEventListener("click", function () {
-      el.inputCsv.value = "";
+      clearComposeSourceFile();
       runMerge();
-      el.multiRowNote.textContent = "";
     });
 
     el.composeSelect.addEventListener("change", function () {
       state.composeTemplateId = el.composeSelect.value || null;
+      clearComposeSourceFile();
       buildComposeFields();
     });
 
